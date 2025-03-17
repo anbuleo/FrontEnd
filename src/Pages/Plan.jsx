@@ -3,7 +3,7 @@ import Layout from '../Components/Layout'
 import CustomerTable from '../Components/SubComponents/CustomerTable'
 import CreatePlan from '../Components/SubComponents/CreatePlan'
 import { AiOutlineUserAdd } from 'react-icons/ai'
-import PlanCard from '../Components/SubComponents/planCard'
+import PlanCard from '../Components/SubComponents/PlanCard'
 import { AiOutlineSisternode } from "react-icons/ai";
 // import { AiOutlineSisternode } from "react-icons/ai";
 function Plan() {
