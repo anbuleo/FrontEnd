@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector,useDispatch } from 'react-redux'
-import EditCustomer from '../../Pages/editCustomer'
+import EditCustomer from '../../Pages/EditCustomer'
 import { selectCustomerForEdit } from '../../Redux/Reducer/CustomerReducer'
 import UseReloadHook from '../../Hooks/UseReloadHook'
 
