@@ -71,7 +71,7 @@ function Collection() {
           <label className="block font-medium">Collection</label>
           <select
             name="collectionId"
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded select"
             value={formik.values.collectionId}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}

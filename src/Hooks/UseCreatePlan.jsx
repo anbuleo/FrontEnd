@@ -13,11 +13,11 @@ function UseCreatePlan() {
     let {ReloadPlan} = UseReloadHook()
 
 
-    let createPlan =async({name,amount})=>{
+    let createPlan =async({name,amount,speed})=>{
         try {
             setLoading(true)
 
-            let res = await AxiosService.post('/plan/createplan',{name,amount})
+            let res = await AxiosService.post('/plan/createplan',{name,amount,speed})
 
             // console.log(res)
 
@@ -36,12 +36,12 @@ function UseCreatePlan() {
             setLoading(false)
         }
     }
-    let editPlan =async({amount})=>{
+    let editPlan =async({amount,speed})=>{
         // console.log(val)
         try {
             setLoading(true)
 
-            let res = await AxiosService.put(`/plan/editplan/${selectedPlanId}`,{amount})
+            let res = await AxiosService.put(`/plan/editplan/${selectedPlanId}`,{amount,speed})
             // dispatch()
             // console.log(res)
 

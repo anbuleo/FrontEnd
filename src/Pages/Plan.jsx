@@ -1,12 +1,17 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Layout from '../Components/Layout'
 import CustomerTable from '../Components/SubComponents/CustomerTable'
 import CreatePlan from '../Components/SubComponents/CreatePlan'
 import { AiOutlineUserAdd } from 'react-icons/ai'
 import PlanCard from '../Components/SubComponents/PlanCard'
 import { AiOutlineSisternode } from "react-icons/ai";
+import UseReloadHook from '../Hooks/UseReloadHook'
 // import { AiOutlineSisternode } from "react-icons/ai";
 function Plan() {
+    let {ReloadPlan} = UseReloadHook()
+    useEffect(()=>{
+        ReloadPlan()
+    },[])
   return <>
  
     <Layout>

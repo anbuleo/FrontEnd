@@ -21,7 +21,7 @@ function editCustomer() {
     const editcustomerSchema = Yup.object().shape({
         name : Yup.string().required('Customer Name Required'),
         mobile : Yup.string().required('Mobile Number Required').max(10,'maximum 10 digit').min(10,'Enter valid 10 digit'),
-        address : Yup.string().required("Address required").min(5,'Minimum 3 characters'),
+        address : Yup.string().required("Address required").min(2,'Minimum 3 characters'),
         planId: Yup.string().required("* Select their plan"),
         advanceAmount: Yup.number(),
         remainingBalance: Yup.number()

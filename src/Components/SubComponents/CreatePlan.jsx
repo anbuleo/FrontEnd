@@ -10,7 +10,8 @@ function createPlan() {
     let isAdmin = JSON.parse(localStorage.getItem('data'))?.role
     let planSchema = Yup.object().shape({
          name : Yup.string().required('Plan Name Required'),
-         amount : Yup.number().required('* enter amount')
+         amount : Yup.number().required('* enter amount'),
+         speed:Yup.number().required('* Enter speed limit')
     })
      const handleCreate = async (val) =>{
             try {
@@ -37,7 +38,8 @@ function createPlan() {
                         <Formik
                             initialValues={{
                               name : "",
-                             amount:0
+                             amount:0,
+                             speed:0
           
                             }}
                             onSubmit={(values)=>handleCreate(values)}
@@ -52,6 +54,12 @@ function createPlan() {
                           <input className='input input-bordered w-full text-black' type="text" name='name' placeholder="plan name"  onBlur={handleBlur} onChange={handleChange}/>
                           {errors.name && touched.name ? <div style={{color:"red"}}>{errors.name}</div>:null}
                         </div>
+                        <div className="">
+                          <label className="text-orange-100">Speed</label>
+                          <input className='input input-bordered w-full text-black' type="number" name='speed' placeholder="enter plan speed"  onBlur={handleBlur} onChange={handleChange}/>
+                          {errors.speed && touched.speed ? <div style={{color:"red"}}>{errors.speed}</div>:null}
+                        </div>
+                       
                         <div className="">
                           <label className="text-orange-100">Amount</label>
                           <input className='input input-bordered w-full text-black' type="number" name='amount' placeholder="enter plan amount"  onBlur={handleBlur} onChange={handleChange}/>

@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 
 function Home() {
 
-    let {customerReload,reloadCollectionreports} = UseReloadHook()
+    let {customerReload,reloadCollectionreports,ReloadPlan,collectionReload} = UseReloadHook()
     let {customer} = useSelector(state=>state.customer)
     // const memoizedCustomer = useMemo(() => customer, [customer]);
 
@@ -17,6 +17,8 @@ function Home() {
     useEffect(()=>{
        customerReload()
        reloadCollectionreports()
+       ReloadPlan()
+       collectionReload()
     },[])
 
   return (
@@ -28,12 +30,12 @@ function Home() {
           {/* Stats Cards */}
           {monthwise && monthwise?.map((e,i)=>{
             return <div key={i} className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="p-4 bg-white shadow rounded text-center">
+            <div className="p-4 bg-gradient-to-br from-sky-600 to-violet-900 text-orange-100 shadow rounded text-center">
               <p className="text-xl font-bold">{e._id.month}<sup>rd</sup> </p>
-              <p className="text-gray-600">Month</p>
+              <p className="text-gray-50">Month</p>
            
               <p className="text-xl font-bold">₹{e.totalPending}</p>
-              <p className="text-gray-600">Pending Payments</p>
+              <p className="text-gray-50">Pending Payments</p>
             </div>
            
           </div>
@@ -41,6 +43,9 @@ function Home() {
           
 
           {/* Recent Collections */}
+          <div className="pt-4">
+            <div className="font-bold text-2xl bg-gradient-to-br p-2 from-sky-600 ">Total Customer: {customer.length}</div>
+          </div>
           <h3 className="text-lg font-bold mt-6">Recent Payments</h3>
           <table className="w-full bg-white shadow-md rounded mt-4">
             <thead>

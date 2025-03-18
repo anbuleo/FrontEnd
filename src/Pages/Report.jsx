@@ -58,7 +58,7 @@ const getUser = async()=>{
     <p className="text-4xl font-bold underline text-rose-400 pb-2 ">Month Wise</p>
     <div  className="grid grid-cols-2 md:grid-cols-4 gap-4">
     {monthwise && monthwise?.map((e,i)=>{
-            return             <div key={i} className="p-4 bg-gradient-to-br from-sky-600 to-fuchsia-600 text-white  shadow rounded text-center">
+            return             <div key={i} className="p-4 bg-gradient-to-br from-sky-600 to-violet-900  text-white  shadow rounded text-center">
               <p className="text-xl font-bold">{e._id.month}<sup>rd</sup> </p>
               <p className="text-gray-100">Month {e._id.year}</p>
            
@@ -74,7 +74,7 @@ const getUser = async()=>{
           <p className="text-4xl font-bold underline text-rose-400 ">Plan Wise</p>
 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
 {planwise && planwise?.map((e,i)=>{
-            return     <div key={i}  className="p-4 bg-gradient-to-br from-sky-600 to-fuchsia-600 text-white  shadow rounded text-center">
+            return     <div key={i}  className="p-4 bg-gradient-to-br from-fuchsia-600 to-orange-600 text-white  shadow rounded text-center">
               <p className="text-xl font-bold">Plan Name : {e.planName} </p>
               {/* <p className="text-gray-600">totalAmountDue:  ₹{e.totalAmountDue}</p> */}
            

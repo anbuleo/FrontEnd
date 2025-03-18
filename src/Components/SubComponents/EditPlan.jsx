@@ -14,7 +14,7 @@ function EditPlan() {
     let current = plan?.filter((a,b)=>a._id  == selectedPlanId)
     let cur = current[0]
 
-    // console.log(cur)
+    // console.log(id)
     //   useEffect(()=>{
        
         
@@ -22,7 +22,8 @@ function EditPlan() {
 
      let planSchema = Yup.object().shape({
              name : Yup.string().required('Plan Name Required'),
-             amount : Yup.number().required('* enter amount')
+             amount : Yup.number().required('* enter amount'),
+             speed:Yup.number().required('* Enter speed ')
         })
          const handleCreate = async (val) =>{
                 try {
@@ -48,7 +49,9 @@ function EditPlan() {
                                     enableReinitialize
                                 initialValues={{
                                   name : cur?.name,
-                                 amount:cur?.amount
+                                 amount:cur?.amount,
+                                 speed:cur?.speed || 0
+                              
               
                                 }}
                                 onSubmit={(values)=>handleCreate(values)}
@@ -64,6 +67,12 @@ function EditPlan() {
                               <input value={values.name} disabled className='input input-bordered w-full text-black' type="text" name='name' placeholder="plan name"  onBlur={handleBlur} onChange={handleChange}/>
                               {errors.name && touched.name ? <div style={{color:"red"}}>{errors.name}</div>:null}
                             </div>
+                            <div className="">
+                              <label className="text-orange-100">Speed</label>
+                              <input value={values.speed} className='input input-bordered w-full text-black' type="number" name='speed' placeholder="enter plan speed"  onBlur={handleBlur} onChange={handleChange}/>
+                              {errors.speed && touched.speed ? <div style={{color:"red"}}>{errors.speed}</div>:null}
+                            </div>
+                           
                             <div className="">
                               <label className="text-orange-100">Amount</label>
                               <input value={values.amount} className='input input-bordered w-full text-black' type="number" name='amount' placeholder="enter plan amount"  onBlur={handleBlur} onChange={handleChange}/>
