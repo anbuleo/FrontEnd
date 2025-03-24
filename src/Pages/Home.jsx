@@ -24,7 +24,7 @@ function Home() {
   return (
     <Layout>
 
-<main className="flex-1 p-6">
+<main className="flex-1 p-6 ">
           <h2 className="text-2xl font-bold mb-4">Dashboard</h2>
 
           {/* Stats Cards */}
@@ -44,10 +44,10 @@ function Home() {
 
           {/* Recent Collections */}
           <div className="pt-4">
-            <div className="font-bold text-2xl bg-gradient-to-br p-2 from-sky-600 ">Total Customer: {customer.length}</div>
+            <div className="font-bold text-xl bg-gradient-to-br p-2 from-sky-600 ">Total Customer: {customer.length}</div>
           </div>
           <h3 className="text-lg font-bold mt-6">Recent Payments</h3>
-          <table className="w-full bg-white shadow-md rounded mt-4">
+          <table className=" table bg-white shadow-md rounded mt-4">
             <thead>
               <tr className="bg-blue-600 text-white">
                 <th className="p-2">Customer</th>

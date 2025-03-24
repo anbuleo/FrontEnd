@@ -38,12 +38,12 @@ function CreateCustomer() {
     
     <div className=''>
            {loading ? <div className="place-content-center mx-auto"><span className="loading loading-bars loading-lg"></span></div>:<> <div className="  text-2xl   rounded-lg shadow sm:p-6 md:p-8  ">
-              <p className="text-center text-orange-100">Create Customer </p>
+              <p className="text-center text-orange-100 ">Create Customer </p>
              
             </div>
             <div className="divider divider-[#AA3AA5]"></div>
             {/* <p className="btn  border-t-indigo-500 hover:bg-indigo-500 btn-outline float-right" onClick={()=>navigate('/home')}>{'<--- back'}</p> */}
-            <div className="   w-3/4 mx-auto  opacity-95 border border-[#d60bc5]  rounded-lg shadow-2xl  sm:p-6 md:p-8 ">
+            <div className="   w-3/4 mx-auto  opacity-95 border  border-[#5f0e58] animate-border  rounded-lg shadow-2xl  sm:p-6 md:p-8 ">
               <Formik
                   initialValues={{
                     name : "",

@@ -1,2 +1,17 @@
 @import "tailwindcss";
 @plugin "daisyui";
+
+
+
+@keyframes borderColorAnimation {
+    0% { border-color: #f5088a; }
+    25% { border-color: #ff6600; }
+    50% { border-color: #00ccff; }
+    75% { border-color: #00ff66; }
+    100% { border-color: #e7bfe4; }
+  }
+  
+  .animate-border {
+    animation: borderColorAnimation 2s linear infinite;
+  }
+  

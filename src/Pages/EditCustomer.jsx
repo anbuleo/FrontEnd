@@ -46,7 +46,7 @@ function editCustomer() {
             </div>
             <div className="divider divider-[#AA3AA5]"></div>
             {/* <p className="btn  border-t-indigo-500 hover:bg-indigo-500 btn-outline float-right" onClick={()=>navigate('/home')}>{'<--- back'}</p> */}
-            <div className="   w-3/4 mx-auto  opacity-95 border border-[#d60bc5]  rounded-lg shadow-2xl  sm:p-6 md:p-8 ">
+            <div className="   w-3/4 mx-auto  opacity-95 border border-[#d60bc5] animate-border rounded-lg shadow-2xl  sm:p-6 md:p-8 ">
               <Formik
               enableReinitialize
                   initialValues={{

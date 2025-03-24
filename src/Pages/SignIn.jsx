@@ -1,5 +1,5 @@
 import React from 'react'
-import logo from "../assets/skycommlogo.png"
+import logo from "../assets/skycommlogo1.png"
 import { Formik } from 'formik'
 import * as Yup from 'yup';
 import {toast} from 'react-toastify'
@@ -30,18 +30,18 @@ function SignIn() {
   return <>
   <div className="flex h-screen">
     {/* left */}
-    <div className="w-2/4 my-auto mx-auto hidden md:block">
+    <div className="w-2/4 my-auto mx-auto hidden md:block text-[#2a2544]">
         <div className="">
-            <h2 className='text-3xl font-bold text-center text-[#064E89]'>
-                Welcome to SKY COMMUNICATIONS
+            <h2 className='text-3xl font-bold text-center '>
+                Welcome to <span className="bg-gradient-to-br font-extrabold from-sky-600 to-fuchsia-600 bg-clip-text text-transparent">SKY COMMUNICATIONS</span> 
             </h2>
-            <p className='text-xl font-bold text-center text-[#064E89]'>
+            <p className='text-xl font-bold text-center '>
                 Collection Moniter App
             </p>
         </div>
     </div>
     {/* right */}
-    <div className="w-full md:w-2/4 bg-[#064E89] flex justify-center items-center p-4 ">
+    <div className="w-full md:w-2/4 bg-[#2a2544] flex justify-center items-center p-4 ">
         <div className="w-full max-w-sm sm:max-w-md md:max-w-lg">
             {/* banner */}
             <div className="card  w-full shadow-sm bg-transparent mx-auto items-center">

@@ -60,7 +60,7 @@ function Collection() {
   
   <Layout>
     <div className="">
-    <div className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg">
+    <div className="max-w-lg mx-auto p-6 bg-white border-1   animate-border shadow-lg rounded-lg">
       <h2 className="text-2xl font-bold text-center mb-4">Make a Payment</h2>
 
       {message && <p className="text-center text-red-500">{message}</p>}

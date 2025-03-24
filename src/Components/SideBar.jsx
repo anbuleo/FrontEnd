@@ -11,17 +11,17 @@ function SideBar({ isOpen, toggleSidebar }) {
   let isAdmin = JSON.parse(localStorage.getItem('data')).role
   return (
     <div
-      className={`fixed z-50 inset-y-0 left-0 bg-gradient-to-br from-sky-600 to-fuchsia-600 text-white  w-64 p-5 transform  ${
-        isOpen ? "translate-x-0" : "-translate-x-full"
-      } md:translate-x-0 md:relative transition-transform duration-300 ease-in-out`}
+      className={`fixed z-50  inset-y-0 left-0 bg-[#2a2544]  text-white  w-64 p-5 transform  ${
+        isOpen ? "translate-x-0 " : "-translate-x-full"
+      }  transition-transform duration-300 ease-in-out`}
     >
       {/* Close Button on Mobile */}
-      <button className="absolute top-4 right-4 md:hidden text-2xl" onClick={toggleSidebar}>
+      <button className="absolute top-4 right-4  text-2xl" onClick={toggleSidebar}>
         <FiX />
       </button>
 
       {/* Sidebar Content */}
-      <h2 className="text-2xl font-bold mb-6 flex my-auto" >Dashboard <div className=""><img  src={logo} alt="logo" style={{ width: "50px", height: "50px" }} /></div></h2>
+      <h2 className="text-2xl font-bold mb-6 flex my-auto" > <div className=""><img  src={logo} alt="logo" style={{ width: "50px", height: "50px" }} /></div></h2>
       <ul className="space-y-4">
         <li>
 
