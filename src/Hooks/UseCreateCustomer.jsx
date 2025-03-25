@@ -29,12 +29,12 @@ function UseCreateCustomer() {
          }
  
      }
-     let editCustomerPlan = async(id,PId)=>{
+     let editCustomerPlan = async(id,PId,advan,remain)=>{
         try {
-            let res = await AxiosService.put(`/customer/changeplan/${id}`,{planId:PId})
+            let res = await AxiosService.put(`/customer/changeplan/${id}`,{planId:PId,advanceAmount:advan,remainingBalance:remain})
 
             if(res.status === 200){
-                toast.success("Plan Changed Success")
+                toast.success("Customer Edited Success")
                 await customerReload()
                 document.getElementById("my_modal_5").close()
             }

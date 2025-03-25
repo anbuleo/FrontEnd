@@ -79,8 +79,8 @@ function Collection() {
             <option value="">Select a collection</option>
             {collection&&collection?.map((col,i) => {
                 return col.status !=='Paid' && (
-                    <option key={col._id} value={col._id}>
-                      {col.customerId.name} - ₹{col.amountDue} (Due) / {col.customerId.mobile}
+                    <option key={col?._id} value={col?._id}>
+                      {col.customerId?.name} - ₹{col?.amountDue} (Due) / {col?.customerId?.mobile}
                     </option>
                   )
             })}

@@ -6,6 +6,7 @@ import CreateCustomer from './CreateCustomer';
 import * as XLSX from "xlsx";
 import AxiosService from '../Common/AxiosService';
 import { toast } from 'react-toastify';
+import UseReloadHook from '../Hooks/UseReloadHook';
 
 
 function Customer() {
@@ -13,6 +14,7 @@ function Customer() {
   const [file, setFile] = useState(null);
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(false);
+  const {customerReload} = UseReloadHook()
   // console.log(data)
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -34,6 +36,7 @@ function Customer() {
 
       setResponse(data);
       toast.success(`${data.inserted} customers added successfully.`);
+      customerReload()
     } catch (error) {
       toast.error(error.response?.data?.message || "Upload failed.");
     } finally {
@@ -75,10 +78,10 @@ function Customer() {
              create Customer <AiOutlineUserAdd />
             </button>
             <dialog id="my_modal_8" className="modal ">
-              <div className="modal-box  bg-gradient-to-br from-sky-600 to-fuchsia-600">
+              <div className="modal-box bg-[#2a2544]">
                 <form method="dialog">
                   {/* if there is a button in form, it will close the modal */}
-                  <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+                  <button className="btn btn-sm text-orange-100 btn-circle btn-ghost absolute right-2 top-2">
                     ✕
                   </button>
                 </form>
@@ -87,7 +90,7 @@ function Customer() {
               </div>
             </dialog>
           </div>
-          <div className="flex">
+          <div className="flex flex-col gap-4 py-2">
           <input
          type="file" onChange={handleFileChange} accept=".xlsx"
           className="file-input file-input-primary"

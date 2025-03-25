@@ -30,7 +30,7 @@ function editCustomer() {
       const handleCreate = async (val) =>{
         // console.log(val)
         try {
-         await editCustomerPlan(selectedCustomer,val.planId)
+         await editCustomerPlan(selectedCustomer,val.planId,val.advanceAmount,val.remainingBalance)
         } catch (error) {
           console.log(error)
           toast.error('Error occur')
@@ -105,12 +105,12 @@ function editCustomer() {
               </div>
               <div className="">
                 <label className="text-orange-100">Advance Amount</label>
-                <input value={values.advanceAmount} disabled className='input input-bordered w-full text-black' type="number" name='advanceAmount' placeholder="enter if only had"  onBlur={handleBlur} onChange={handleChange}/>
+                <input value={values.advanceAmount}  className='input input-bordered w-full text-black' type="number" name='advanceAmount' placeholder="enter if only had"  onBlur={handleBlur} onChange={handleChange}/>
                 {errors.advanceAmount && touched.advanceAmount ? <div style={{color:"red"}}>{errors.advanceAmount}</div>:null}
               </div>
               <div className="">
                 <label className="text-orange-100">Remaining balance or pending</label>
-                <input value={values.remainingBalance} disabled className='input input-bordered w-full text-black' type="number" name='remainingBalance' placeholder="enter if only had"  onBlur={handleBlur} onChange={handleChange}/>
+                <input value={values.remainingBalance}  className='input input-bordered w-full text-black' type="number" name='remainingBalance' placeholder="enter if only had"  onBlur={handleBlur} onChange={handleChange}/>
                 {errors.remainingBalance && touched.remainingBalance ? <div style={{color:"red"}}>{errors.remainingBalance}</div>:null}
               </div>
                   <div className="btn btn-primary  w-full py-2 "  onClick={handleSubmit}>Change Plan</div>
