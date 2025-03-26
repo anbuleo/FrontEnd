@@ -12,7 +12,7 @@ function NavBar({ toggleSidebar }) {
             <FiMenu />
           </button>
             <div className=" w-12 h-12 md:h-16 md:w-16"><img src={logo} alt="" /></div>
-            <div className="flexc flex-col items center justify-center text-sm md:text-lg  bg-gradient-to-br from-sky-600 to-fuchsia-600 bg-clip-text text-transparent">
+            <div className="flex flex-col items center justify-center text-sm md:text-lg  bg-gradient-to-br from-sky-600 to-fuchsia-600 bg-clip-text text-transparent">
                 <p className="">Sky Communication</p>
                 <p className="">Internet Services</p>
             </div>
