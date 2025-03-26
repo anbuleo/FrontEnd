@@ -46,6 +46,7 @@ function Collection() {
               resetForm();
               toast.success('Collection Entry Success')
             } catch (error) {
+              // console.log(error)
               setMessage(error.response?.data?.message || "Payment failed");
             }
       
