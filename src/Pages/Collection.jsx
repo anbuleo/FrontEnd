@@ -6,6 +6,8 @@ import { useSelector } from "react-redux";
 import AxiosService from "../Common/AxiosService";
 import UseReloadHook from "../Hooks/UseReloadHook";
 import { toast } from "react-toastify";
+import Select from "react-select";
+import { useNavigate } from "react-router-dom";
 
 function Collection() {
     const [isLoading, setIsLoading] = useState(false);
@@ -13,6 +15,7 @@ function Collection() {
     const {collectionReload} = UseReloadHook()
         let {collection} = useSelector(state => state.collection)
         // console.log(collection)
+        let navigate =useNavigate()
 
         useEffect(()=>{
             collectionReload()
@@ -43,8 +46,10 @@ function Collection() {
               const res = await AxiosService.put("/collection/payment", values);
               setMessage(res.data.message);
               await collectionReload()
-              resetForm();
+              resetForm({ values: { collectionId: "", amountPaid: "", paymentMode: "cash", transactionId: "" } });
               toast.success('Collection Entry Success')
+              navigate('/home')
+              
             } catch (error) {
               // console.log(error)
               setMessage(error.response?.data?.message || "Payment failed");
@@ -54,7 +59,13 @@ function Collection() {
           },
         });
   
-  
+        const collectionOptions =
+        collection
+          ?.filter((col) => col.status !== "Paid") // Exclude Paid collections
+          .map((col) => ({
+            value: col._id,
+            label: `${col.customerId?.name} - ₹${col.amountDue} / ${col.customerId?.mobile}`,
+          })) || [];
   
    
   return <>
@@ -66,12 +77,13 @@ function Collection() {
 
       {message && <p className="text-center text-red-500">{message}</p>}
 
-      <form onSubmit={formik.handleSubmit} className="space-y-4">
+      <form  onSubmit={formik.handleSubmit} className="space-y-4">
         {/* Collection Selection */}
-        <div>
+        {/* <div>
           <label className="block font-medium">Collection</label>
           <select
             name="collectionId"
+            isSearchable={true}
             className="w-full p-2 border rounded select"
             value={formik.values.collectionId}
             onChange={formik.handleChange}
@@ -89,8 +101,26 @@ function Collection() {
           {formik.touched.collectionId && formik.errors.collectionId && (
             <p className="text-red-500 text-sm">{formik.errors.collectionId}</p>
           )}
-        </div>
+        </div> */}
 
+<div>
+            <label className="block font-medium">Collection</label>
+            <Select
+              options={collectionOptions}
+              isSearchable={true} // 
+              name="collectionId"
+              value={collectionOptions.find(
+                (option) => option.value === formik.values.collectionId
+              )}
+              onChange={(selectedOption) =>
+                formik.setFieldValue("collectionId", selectedOption?.value)
+              }
+              onBlur={() => formik.setFieldTouched("collectionId", true)}
+            />
+            {formik.touched.collectionId && formik.errors.collectionId && (
+              <p className="text-red-500 text-sm">{formik.errors.collectionId}</p>
+            )}
+          </div>
         {/* Amount Input */}
         <div>
           <label className="block font-medium">Amount Paid (₹)</label>
