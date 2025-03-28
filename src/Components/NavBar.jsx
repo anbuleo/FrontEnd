@@ -6,7 +6,7 @@ import { FiUser } from "react-icons/fi";
 function NavBar({ toggleSidebar }) {
   let user = JSON.parse(localStorage.getItem('data'))?.userName
     return (
-        <nav className="bg-[#2a2544]  text-white  p-4 flex justify-between shadow-xl items-center">
+        <nav className="fixed top-0 w-full z-50 bg-[#2a2544] text-white p-4 flex justify-between shadow-xl items-center">
           <h1 className="text-xl font-bold flex items-center">
           <button className=" text-2xl" onClick={toggleSidebar}>
             <FiMenu />

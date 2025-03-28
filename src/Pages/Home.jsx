@@ -38,6 +38,7 @@ function Home() {
        collectionReload()
        getTranction()
     },[])
+    // console.log(tableData)
 
   return (
     <Layout>
@@ -54,14 +55,15 @@ function Home() {
                           <div className="md:w-1/2 hidden md:block relative"><img src={banner} className='' alt="banner" /><div className="absolute inset-0 bg-gradient-to-l from-transparent to-[#251047]"></div></div>      
           </div>
         <div className="px-4">
-        <h2 className="text-2xl font-bold mb-4">Dashboard</h2>
+        <h2 className="text-2xl font-bold mb-4 ">Recent Transactions</h2>
 
         {
-          tableData && <div className="">
-            <table className="table table-zebra rounded-lg shadow-2xl">
+          tableData && <div className="overflow-x-auto h-auto max-w-full">
+            <table className="table table-zebra  rounded-lg w-full shadow-2xl">
               <thead>
                 <tr>
-                  <th>#</th>
+                  <th>Name</th>
+                  <th>Date</th>
                   <th>Type</th>
                   <th>Amount</th>
                   <th>By</th>
@@ -70,7 +72,8 @@ function Home() {
               <tbody>
               {tableData && tableData?.map((e,i)=>{
           return <tr key={i}>
-                  <td>{i+1}</td>
+                  <td>{e?.customerName}</td>
+                  <td className=" "><p>{e?.date?.split("T")[0]?.split("-").join(" ").slice(5)}</p><p>{e?.date?.split("T")[1]?.split(".")[0]}</p></td>
                   <td>{e?.type}</td>
                   <td>{e?.amount}</td>
                   <td>{e?.collectedBy?.userName}</td>
@@ -97,34 +100,11 @@ function Home() {
 
 
 {/* Recent Collections */}
-<div className="pt-4">
+<div className="pt-4 w-fit ">
   <div className="font-bold text-xl bg-gradient-to-br p-2 from-sky-600 ">Total Customer: {customer.length}</div>
 </div>
-<h3 className="text-lg font-bold mt-6">Recent Payments</h3>
-<table className=" table bg-white shadow-md rounded mt-4">
-  <thead>
-    <tr className="bg-blue-600 text-white">
-      <th className="p-2">Customer</th>
-      <th className="p-2">Date</th>
-      <th className="p-2">Amount</th>
-      <th className="p-2">Status</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr className="text-center">
-      <td className="p-2">John Doe</td>
-      <td className="p-2">March 10, 2025</td>
-      <td className="p-2">₹2,000</td>
-      <td className="p-2 text-green-500">Paid</td>
-    </tr>
-    <tr className="text-center">
-      <td className="p-2">Jane Smith</td>
-      <td className="p-2">March 12, 2025</td>
-      <td className="p-2">₹1,500</td>
-      <td className="p-2 text-red-500">Pending</td>
-    </tr>
-  </tbody>
-</table>
+
+
         </div>
         </main>
     </Layout>

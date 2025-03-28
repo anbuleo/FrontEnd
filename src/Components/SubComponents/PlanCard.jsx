@@ -35,7 +35,7 @@ function PlanCard() {
   return <>
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 ">
         {plan && plan?.map((e,i)=>{
-            return <div key={i} className="card    bg-gradient-to-br from-sky-600 to-fuchsia-600 text-white  shadow-sm">
+            return <div key={i} data-aos="fade-up" className="card    bg-gradient-to-br from-sky-600 to-fuchsia-600 text-white  shadow-sm">
             <div className="card-body">
               <span className="badge badge-xs badge-warning">Most Popular</span>
               <div className="flex justify-between">

@@ -6,10 +6,13 @@ import { AiOutlineUserAdd } from 'react-icons/ai'
 import PlanCard from '../Components/SubComponents/PlanCard'
 import { AiOutlineSisternode } from "react-icons/ai";
 import UseReloadHook from '../Hooks/UseReloadHook'
+import AOS from "aos";
+import "aos/dist/aos.css";
 // import { AiOutlineSisternode } from "react-icons/ai";
 function Plan() {
     let {ReloadPlan} = UseReloadHook()
     useEffect(()=>{
+      AOS.init({ duration: 800, easing: "ease-in-out", once: true });
         ReloadPlan()
     },[])
   return <>
@@ -37,7 +40,7 @@ function Plan() {
             </dialog>
           </div>
         </div>
-        <div className="pt-2">
+        <div className="py-2">
           <PlanCard />
         </div>
       </Layout>

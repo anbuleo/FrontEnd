@@ -9,6 +9,7 @@ function Report() {
 
   let {monthwise,planwise,userwise} = useSelector(state=>state.collection)
   const [userData,setUser]= useState([])
+  const [data, setData] = useState([]);
   useEffect(()=>{
     getUser()
   },[])
@@ -41,10 +42,17 @@ const handleAddStaff = async(id)=>{
 const getUser = async()=>{
   try {
     let res = await AxiosService.get('/user/getalluser')
+    let res1 = await AxiosService.get('/customer/getcollection')
+ 
     if(res.status === 200 &&  JSON.stringify(res.data.user) !== JSON.stringify(userData)){
       setUser(res?.data?.user)
     }
+    if(res1.status === 200){
+      setData(res1?.data?.data)
+    }
+    // console.log(res1)
   } catch (error) {
+    // console.log(error)
     toast.error('Error in user')
   }
 }
@@ -143,6 +151,23 @@ const getUser = async()=>{
         </div>
       </div>
     </div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 bg-gray-100 gap-4 p-4">
+            {data?.length === 0 ? (
+                <p className="text-center text-gray-500">No data available</p>
+            ) : (
+                data?.map((item, index) => (
+                    <div key={index} className="card bg-base-100 shadow-xl">
+                        <div className="card-body text-center">
+                            <h2 className="card-title text-primary">Day {item.day}</h2>
+                            <p className="text-gray-600 font-semibold">{item.collectedBy.userName}</p>
+                            <p className={`text-lg font-bold ${item.type === "advance" ? "text-blue-500" : "text-green-500"}`}>
+                                {item.type.toUpperCase()}: ₹{item.totalCollected}
+                            </p>
+                        </div>
+                    </div>
+                ))
+            )}
+        </div>
   </Layout>
   </>
 }

@@ -17,14 +17,14 @@ function Layout({children}) {
       <SideBar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
       {/* Main Content */}
-      <div className={`flex-1 flex flex-col transition-all duration-100 ${
+      <div className={`flex-1 flex flex-col transition-all duration-100  ${
           isSidebarOpen ? "blur-sm pointer-events-none" : ""
         }`}>
         {/* Navbar */}
-        <NavBar toggleSidebar={toggleSidebar} />
+        <NavBar  toggleSidebar={toggleSidebar} />
 
         {/* Page Content */}
-        <main className=" ">{children}</main>
+        <main className="pt-24 ">{children}</main>
       </div>
         <Footer className="items-end" />
     </div>
