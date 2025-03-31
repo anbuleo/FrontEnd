@@ -10,7 +10,7 @@ function Report() {
   let {monthwise,planwise,userwise} = useSelector(state=>state.collection)
   const [userData,setUser]= useState([])
   const [data, setData] = useState([]);
-  console.log(data)
+  // console.log(data)
   useEffect(()=>{
     getUser()
   },[])
