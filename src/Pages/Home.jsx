@@ -8,11 +8,11 @@ import AxiosService from '../Common/AxiosService'
 
 function Home() {
 
-    let {customerReload,reloadCollectionreports,ReloadPlan,collectionReload} = UseReloadHook()
+    let {customerReload,reloadCollectionreports,ReloadPlan,collectionReload,cardData,getAllCollection} = UseReloadHook()
     let {customer} = useSelector(state=>state.customer)
     let [tableData,setTableData] = useState([])
 
-
+    let user = JSON.parse(localStorage.getItem('data'))?.userName
     const getTranction = async()=>{
       try {
         let res = await AxiosService.get('/customer/get20')
@@ -37,6 +37,7 @@ function Home() {
        ReloadPlan()
        collectionReload()
        getTranction()
+       getAllCollection()
     },[])
     // console.log(tableData)
 
@@ -111,6 +112,27 @@ function Home() {
 <div className="pt-4 w-fit ">
   <div className="font-bold text-xl bg-gradient-to-br p-2 from-sky-600 ">Total Customer: {customer.length}</div>
 </div>
+  <div className="text-center-font-bold text-sm  md:text-2xl">
+    collections
+  </div>
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 bg-gray-100 gap-4 p-4">
+            {cardData?.length === 0 ? (
+                <p className="text-center text-gray-500">No data available</p>
+            ) : (
+              cardData?.map((item, index) => {
+                      return user === item.collectedBy.userName ?<><div key={index} className="card bg-base-100 shadow-xl">
+                      <div className="card-body text-center">
+                          <h2 className="card-title text-primary">Day {item.day}</h2>
+                          <p className="text-gray-600 font-semibold">{item.collectedBy.userName}</p>
+                          <p className={`text-lg font-bold ${item.type === "advance" ? "text-blue-500" : "text-green-500"}`}>
+                              {item.type.toUpperCase()}: ₹{item.totalCollected}
+                          </p>
+                      </div>
+                  </div></>:<></>
+                    }
+                )
+            )}
+        </div>
 
 
         </div>

@@ -10,6 +10,7 @@ function CustomerTable() {
     let [loading,setLoading] = useState(false)
     let {customer,selectedCustomer} = useSelector(state=>state.customer)
     // console.log(customer)
+    let admin = JSON.parse(localStorage.getItem('data'))?.role
     const [searchQuery, setSearchQuery] = useState("");
     let {customerReload} = UseReloadHook()
     
@@ -73,10 +74,10 @@ function CustomerTable() {
                                 setExpandedCustomerId(
                                     expandedCustomerId === e._id ? null : e._id
                                   )}}> {expandedCustomerId === e._id ? "Hide" : "View"}</button>
-                                <p  className="btn btn-success mx-auto"
+                               {admin ==='admin'?<> <p  className="btn btn-success mx-auto"
               onClick={() => {
                 dispatch(selectCustomerForEdit(e._id))
-                document.getElementById("my_modal_5").showModal()}}>edit</p> <button className="btn btn-error"  disabled={loading} onClick={()=>handleDelete(e._id)}>Delete</button></td>
+                document.getElementById("my_modal_5").showModal()}}>edit</p> <button className="btn btn-error"  disabled={loading} onClick={()=>handleDelete(e._id)}>Delete</button></>:<></>}</td>
                             
                         </tr>
                         {expandedCustomerId === e._id && (

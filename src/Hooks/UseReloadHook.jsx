@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { toast } from 'react-toastify'
 import AxiosService from '../Common/AxiosService'
 import { useDispatch } from 'react-redux'
@@ -9,6 +9,7 @@ import { addAllCollections, addAllDataforadmin, addAllmonthwise, addAllPlanwise 
 function UseReloadHook() {
 
     let dispatch = useDispatch()
+    let [cardData,setCardData] = useState([])
 
 
     const ReloadPlan= async()=>{
@@ -70,12 +71,22 @@ function UseReloadHook() {
             toast.error('Error in report')
         }
     }
+    const getAllCollection = async()=>{
+        try {
+            let res1 = await AxiosService.get('/customer/getcollection')
+            if(res1.status === 200){
+               setCardData(res1?.data?.data)
+            }
+        } catch (error) {
+            toast.error('Error in report')
+        }
+    }
 
 
 
 
 
-  return {ReloadPlan,customerReload,collectionReload,reloadCollectionreports}
+  return {ReloadPlan,customerReload,collectionReload,reloadCollectionreports,getAllCollection,cardData}
 }
 
 export default UseReloadHook
