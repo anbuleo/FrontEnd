@@ -71,9 +71,17 @@ function Home() {
               </thead>
               <tbody>
               {tableData && tableData?.map((e,i)=>{
+                const dateObj = e?.date ? new Date(e.date) : null;
           return <tr key={i}>
                   <td>{e?.customerName}</td>
-                  <td className=" "><p>{e?.date?.split("T")[0]?.split("-").join(" ").slice(5)}</p><p>{e?.date?.split("T")[1]?.split(".")[0]}</p></td>
+                  <td className=" "> {dateObj ? (
+                  <>
+                    <p>{dateObj.toLocaleDateString("en-GB")}</p>
+                    <p>{dateObj.toLocaleTimeString()}</p>
+                  </>
+                ) : (
+                  "N/A"
+                )}</td>
                   <td>{e?.type}</td>
                   <td>{e?.amount}</td>
                   <td>{e?.collectedBy?.userName}</td>
