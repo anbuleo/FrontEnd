@@ -10,6 +10,8 @@ import Plan from "./Pages/Plan"
 import Collection from "./Pages/Collection"
 import Admin from "./Pages/Admin"
 import Report from "./Pages/Report"
+import Expense from "./Pages/Expense"
+import DailyCollection from "./Pages/DailyCollection"
 
 function App() {
  
@@ -24,6 +26,8 @@ function App() {
           {/* <Route path="/home" element={<Home />} /> */}
           <Route path="/customer" element={<ProdectedRoute><Customer /></ProdectedRoute>} />
           <Route path="/plan" element={<ProdectedRoute><Plan /></ProdectedRoute>} />
+          <Route path="/dailycollection" element={<ProdectedRoute><DailyCollection /></ProdectedRoute>} />
+          <Route path="/expense" element={<ProdectedRoute><Expense /></ProdectedRoute>} />
           <Route path="/collection" element={<ProdectedRoute><Collection /></ProdectedRoute>} />
           <Route path="/admin" element={<ProdectedRoute><AdminControl><Report /></AdminControl></ProdectedRoute>} />
 

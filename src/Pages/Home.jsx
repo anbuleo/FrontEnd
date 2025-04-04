@@ -55,7 +55,7 @@ function Home() {
                           </div>
                           <div className="md:w-1/2 hidden md:block relative"><img src={banner} className='' alt="banner" /><div className="absolute inset-0 bg-gradient-to-l from-transparent to-[#251047]"></div></div>      
           </div>
-        <div className="px-4">
+        <div className="px-4 bg-slate-200">
         <h2 className="text-2xl font-bold mb-4 ">Recent Transactions</h2>
 
         {
@@ -94,8 +94,9 @@ function Home() {
         }
 
 {/* Stats Cards */}
+<div className="grid grid-cols-2 md:grid-cols-4 gap-4">
 {monthwise && monthwise?.map((e,i)=>{
-  return <div key={i} className="grid grid-cols-2 md:grid-cols-4 gap-4">
+  return <div key={i} className="">
   <div className="p-4 bg-gradient-to-br from-sky-600 to-violet-900 text-orange-100 shadow rounded text-center">
     <p className="text-xl font-bold">{e._id.month}<sup>rd</sup> </p>
     <p className="text-gray-50">Month</p>
@@ -106,6 +107,8 @@ function Home() {
  
 </div>
 })}
+</div>
+
 
 
 {/* Recent Collections */}
@@ -120,6 +123,7 @@ function Home() {
                 <p className="text-center text-gray-500">No data available</p>
             ) : (
               cardData?.map((item, index) => {
+                console.log(item)
                       return user === item.collectedBy.userName ?<><div key={index} className="card bg-base-100 shadow-xl">
                       <div className="card-body text-center">
                           <h2 className="card-title text-primary">Day {item.day}</h2>

@@ -10,6 +10,7 @@ function UseReloadHook() {
 
     let dispatch = useDispatch()
     let [cardData,setCardData] = useState([])
+    let [adminData,setAdminData] = useState([])
 
 
     const ReloadPlan= async()=>{
@@ -74,8 +75,12 @@ function UseReloadHook() {
     const getAllCollection = async()=>{
         try {
             let res1 = await AxiosService.get('/customer/getcollection')
+            let res2 = await AxiosService.get('/collection/getalladmin')
             if(res1.status === 200){
                setCardData(res1?.data?.data)
+            }
+            if(res2.status === 200){
+               setAdminData(res2?.data?.data)
             }
         } catch (error) {
             toast.error('Error in report')
@@ -86,7 +91,7 @@ function UseReloadHook() {
 
 
 
-  return {ReloadPlan,customerReload,collectionReload,reloadCollectionreports,getAllCollection,cardData}
+  return {ReloadPlan,customerReload,collectionReload,reloadCollectionreports,getAllCollection,cardData,adminData}
 }
 
 export default UseReloadHook

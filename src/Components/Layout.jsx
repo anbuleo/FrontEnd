@@ -24,7 +24,7 @@ function Layout({children}) {
         <NavBar  toggleSidebar={toggleSidebar} />
 
         {/* Page Content */}
-        <main className="pt-24 ">{children}</main>
+        <main className="pt-18 md:pt-24 ">{children}</main>
       </div>
         <Footer className="items-end" />
     </div>

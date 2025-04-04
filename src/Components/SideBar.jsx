@@ -5,6 +5,7 @@ import { TfiAgenda  } from "react-icons/tfi";
 import { BsCashCoin } from "react-icons/bs";
 import { toast } from 'react-toastify';
 import logo from "../assets/skycommlogo1.png"
+import { GiExpense, GiNotebook } from 'react-icons/gi';
 
 function SideBar({ isOpen, toggleSidebar }) {
   let navigate = useNavigate()
@@ -62,6 +63,26 @@ function SideBar({ isOpen, toggleSidebar }) {
             }`
           }>
           <TfiAgenda  /> <span>plan</span>
+        </NavLink>
+        </li>
+        <li>
+
+        <NavLink to="/expense" className={({ isActive }) =>
+            `flex items-center space-x-2 p-2 rounded transition ${
+              isActive ? "bg-blue-600 font-bold !flex" : "hover:bg-blue-700"
+            }`
+          }>
+          <GiExpense  /> <span>Expense</span>
+        </NavLink>
+        </li>
+        <li>
+
+        <NavLink to="/dailycollection" className={({ isActive }) =>
+            `flex items-center space-x-2 p-2 rounded transition ${
+              isActive ? "bg-blue-600 font-bold !flex" : "hover:bg-blue-700"
+            }`
+          }>
+          <GiNotebook  /> <span>Daily collection</span>
         </NavLink>
         </li>
         {isAdmin==='admin'?<><li className="">

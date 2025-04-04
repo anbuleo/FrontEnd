@@ -11,12 +11,27 @@ function Report() {
   let {monthwise,planwise,userwise} = useSelector(state=>state.collection)
   const [userData,setUser]= useState([])
   // const [data, setData] = useState([]);
-  const {getAllCollection,cardData} = UseReloadHook()
+  const {getAllCollection,cardData,adminData} = UseReloadHook()
   // console.log(data)
   useEffect(()=>{
     getUser()
     getAllCollection()
   },[])
+  const handleAdminExcelDownload = async () => {
+  try {
+    const res = await AxiosService.get("/collection/download-admin-excel", {
+      responseType: "blob",
+    });
+
+    const blob = new Blob([res.data], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+
+    saveAs(blob, "Admin_Collection.xlsx");
+  } catch (err) {
+    console.error("Error downloading admin Excel", err);
+  }
+};
   const handleDownload = async () => {
     try {
         const response = await AxiosService.get("/collection/download-excel", {
@@ -59,6 +74,19 @@ const getUser = async()=>{
   }
 }
   // console.log(planwise)
+  const handleReceiveMoney = async (id) => {
+    try {
+      const res = await AxiosService.put(`/collection/receive/${id}`);
+      if (res.status === 200) {
+        toast.success("Amount marked as received");
+        getAllCollection(); // Refresh data
+      }
+    } catch (err) {
+      toast.error("Error updating status");
+      console.error(err);
+    }
+  };
+
   return <>
   <Layout>
     <div className="">
@@ -170,6 +198,63 @@ const getUser = async()=>{
                 ))
             )}
         </div>
+      <div className="">
+      <div className="flex justify-end my-4">
+  <button onClick={handleAdminExcelDownload} className="btn btn-success">
+    Download Admin Excel
+  </button>
+</div>
+      <div className="overflow-x-auto mt-6">
+      <h2 className="text-2xl font-bold text-violet-700 mb-2 underline">Pending Collections</h2>
+      <table className="table table-zebra text-center">
+  <thead className="bg-violet-800 text-white">
+    <tr>
+      <th>#</th>
+      <th>User</th>
+      <th>Collection Date</th>
+      <th>Collection Amount</th>
+      <th>Received Amount</th>
+      <th>Status</th>
+      <th>Expense Amount</th>
+      <th>Remarks</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {adminData?.map((item, index) => (
+      <tr key={item._id}>
+        <td>{index + 1}</td>
+        <td>{item?.userId?.userName}</td>
+        <td>{new Date(item?.collectionDate).toLocaleDateString()}</td>
+        <td>₹{item.collectionAmount}</td>
+        <td>₹{item.recievedAmount}</td>
+        <td
+          className={`font-semibold ${
+            item.status === "Pending" ? "text-yellow-500" : "text-green-500"
+          }`}
+        >
+          {item.status}
+        </td>
+        <td>₹{item?.expenseId?.amount || 0}</td>
+        <td className="whitespace-pre-line break-words max-w-xs text-base">{item?.expenseId?.remarks || "—"}</td>
+        <td>
+          {item.status === "Pending" ? (
+            <button
+              className="btn btn-success btn-sm"
+              onClick={() => handleReceiveMoney(item._id)}
+            >
+              Receive
+            </button>
+          ) : (
+            <span className="text-sm text-gray-500">Received</span>
+          )}
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+    </div>
+      </div>
   </Layout>
   </>
 }
