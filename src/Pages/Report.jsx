@@ -128,7 +128,7 @@ const getUser = async()=>{
             </div>
     </div>
     
-    <div className="pt-4">
+    <div className="pt-4 overflow-x-auto mt-6">
       <table className='table '>
         <thead>
          <tr className='bg-violet-900 text-orange-50'> <th>#</th>
