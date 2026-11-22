@@ -1,19 +1,29 @@
-import React from 'react'
-import { Navigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
-import WaittingForApproval from '../Pages/WaittingForApproval'
+import { useEffect } from 'react';
+import { Navigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import WaittingForApproval from '../Pages/WaittingForApproval';
+import { getStoredUser } from './authUtils';
 
-function AdminControl({children}) {
-    let datas = localStorage.getItem('data');
-     let data = JSON.parse(datas)
-    let con1 = data.approved == true
-    let condition = data.role == 'admin'
-    // console.log(data)
-    if(!condition) {
-        toast.warning('Admin only')
+function AdminControl({ children }) {
+  const data = getStoredUser();
+  const isApproved = data?.approved === true || data?.role === 'admin';
+  const isAdmin = data?.role === 'admin';
+
+  useEffect(() => {
+    if (data && isApproved && !isAdmin) {
+      toast.warning('Admin access required', { toastId: 'admin-only-warning' });
     }
+  }, [data, isApproved, isAdmin]);
 
-  return con1 ? condition ? children  : <Navigate to='/home' /> : <WaittingForApproval />
+  if (!data) {
+    return <Navigate to="/" replace />;
+  }
+
+  if (!isApproved) {
+    return <WaittingForApproval />;
+  }
+
+  return isAdmin ? children : <Navigate to="/home" replace />;
 }
 
-export default AdminControl
+export default AdminControl;

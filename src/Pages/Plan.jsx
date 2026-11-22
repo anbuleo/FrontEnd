@@ -1,51 +1,60 @@
-import React, { useEffect } from 'react'
-import Layout from '../Components/Layout'
-import CustomerTable from '../Components/SubComponents/CustomerTable'
-import CreatePlan from '../Components/SubComponents/CreatePlan'
-import { AiOutlineUserAdd } from 'react-icons/ai'
-import PlanCard from '../Components/SubComponents/PlanCard'
-import { AiOutlineSisternode } from "react-icons/ai";
-import UseReloadHook from '../Hooks/UseReloadHook'
-import AOS from "aos";
-import "aos/dist/aos.css";
-// import { AiOutlineSisternode } from "react-icons/ai";
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import Layout from '../Components/Layout';
+import CreatePlan from '../Components/SubComponents/CreatePlan';
+import PlanCard from '../Components/SubComponents/PlanCard';
+import Modal from '../Common/Modal';
+import UseReloadHook from '../Hooks/UseReloadHook';
+import { getStoredUser } from '../Common/authUtils';
+import { FiPlus } from 'react-icons/fi';
+
 function Plan() {
-    let {ReloadPlan} = UseReloadHook()
-    useEffect(()=>{
-      AOS.init({ duration: 800, easing: "ease-in-out", once: true });
-        ReloadPlan()
-    },[])
-  return <>
- 
+  const { ReloadPlan, customerReload } = UseReloadHook();
+  const { plan = [] } = useSelector((state) => state.plan);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const isAdmin = getStoredUser()?.role === 'admin';
+
+  useEffect(() => {
+    ReloadPlan();
+    customerReload();
+  }, [ReloadPlan, customerReload]);
+
+  return (
     <Layout>
-        <div className="">
-          <div className="flex justify-end">
-            <button
-              className="btn btn-success"
-              onClick={() => document.getElementById("my_modal_5").showModal()}
-            >
-             Create Plan <AiOutlineSisternode />
-            </button>
-            <dialog id="my_modal_5" className="modal ">
-              <div className="modal-box bg-gradient-to-br from-sky-600 to-fuchsia-600">
-                <form method="dialog">
-                  {/* if there is a button in form, it will close the modal */}
-                  <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-                    ✕
-                  </button>
-                </form>
-                {/* <h3 className="font-bold text-lg">Hello!</h3> */}
-               <CreatePlan />
-              </div>
-            </dialog>
+      <div className="space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-[#D6E1DF]">
+          <div>
+            <h2 className="text-lg font-bold text-[#141918]">Broadband Packages</h2>
+            <p className="text-sm text-[#4A5452]">
+              {plan.length} active {plan.length === 1 ? 'plan' : 'plans'} available for subscriber assignment
+            </p>
           </div>
+
+          {isAdmin && (
+            <button
+              type="button"
+              onClick={() => setIsCreateOpen(true)}
+              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold transition cursor-pointer"
+            >
+              <FiPlus className="w-4 h-4" />
+              <span>Create Plan</span>
+            </button>
+          )}
         </div>
-        <div className="py-2">
-          <PlanCard />
-        </div>
-      </Layout>
-   
-  </>
+
+        <PlanCard />
+
+        <Modal
+          isOpen={isCreateOpen}
+          onClose={() => setIsCreateOpen(false)}
+          title="Create Internet Plan"
+          subtitle="Add a new speed tier and monthly pricing package"
+        >
+          <CreatePlan onClose={() => setIsCreateOpen(false)} />
+        </Modal>
+      </div>
+    </Layout>
+  );
 }
 
-export default Plan
+export default Plan;

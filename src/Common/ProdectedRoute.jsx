@@ -1,18 +1,24 @@
-import React from 'react'
-import WaittingForApproval from '../Pages/WaittingForApproval'
-import { Navigate } from 'react-router-dom'
+import { useEffect } from 'react';
+import { Navigate } from 'react-router-dom';
+import WaittingForApproval from '../Pages/WaittingForApproval';
+import { clearAuthSession, getAuthToken, getStoredUser } from './authUtils';
 
-function ProdectedRoute({children}) {
-    const token = sessionStorage.getItem('token')
-    let datas = localStorage.getItem('data')
-    let data = JSON.parse(datas)
-   let con1 = data?.approved == true
+function ProdectedRoute({ children }) {
+  const token = getAuthToken();
+  const data = getStoredUser();
 
-    if(!token){
-        sessionStorage.clear()
-        localStorage.clear()
+  useEffect(() => {
+    if (!token || !data) {
+      clearAuthSession();
     }
-  return token ? con1? children :<WaittingForApproval />: <Navigate to='/' />
+  }, [token, data]);
+
+  if (!token || !data) {
+    return <Navigate to="/" replace />;
+  }
+
+  const isApproved = data.approved === true || data.role === 'admin';
+  return isApproved ? children : <WaittingForApproval />;
 }
 
-export default ProdectedRoute
+export default ProdectedRoute;

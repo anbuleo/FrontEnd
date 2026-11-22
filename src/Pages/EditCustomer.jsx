@@ -1,126 +1,320 @@
-import { Formik } from 'formik'
-import React, { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import UseCreateCustomer from '../Hooks/UseCreateCustomer';
-// import UseReloadHook from '../Hooks/UseReloadHook';
-function editCustomer() {
-    let {plan} = useSelector(state => state.plan)
-    let {customer,selectedCustomer} = useSelector(state => state.customer)
-    let {editCustomerPlan,loading} = UseCreateCustomer()
-   
-    // let [data,setData] = useState([])
-    // console.log(id)
+import { formatCurrency } from '../Common/authUtils';
 
-    let details = customer?.filter((a,b)=>a._id === selectedCustomer)
-   let dt = details[0]
- 
+const GSTIN_REGEX = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
 
-    const editcustomerSchema = Yup.object().shape({
-        name : Yup.string().required('Customer Name Required'),
-        mobile : Yup.string().required('Mobile Number Required'),
-        address : Yup.string().required("Address required").min(2,'Minimum 3 characters'),
-        planId: Yup.string().required("* Select their plan"),
-        advanceAmount: Yup.number(),
-        remainingBalance: Yup.number()
-        
-      })
-      const handleCreate = async (val) =>{
-        // console.log(val)
-        try {
-         await editCustomerPlan(selectedCustomer,val.planId,val.advanceAmount,val.remainingBalance)
-        } catch (error) {
-          console.log(error)
-          toast.error('Error occur')
-        }
-      }
-  return <>
-  
-  
-  <div className=''>
-           {loading ? <div className="place-content-center mx-auto"><span className="loading loading-bars loading-lg"></span></div>:<> <div className="  text-2xl   rounded-lg shadow sm:p-6 md:p-8  ">
-              <p className="text-center text-orange-100">change Customer plan</p>
-             
+const editCustomerSchema = Yup.object().shape({
+  name: Yup.string().trim().required('Customer name is required'),
+  mobile: Yup.string()
+    .trim()
+    .matches(/^\d{10}$/, 'Enter a valid 10-digit mobile number')
+    .required('Mobile number is required'),
+  address: Yup.string()
+    .trim()
+    .min(3, 'Address must be at least 3 characters')
+    .required('Address is required'),
+  status: Yup.string().oneOf(['active', 'suspended', 'disconnected']),
+  planId: Yup.string().required('Please select a plan'),
+  advanceAmount: Yup.number().typeError('Must be a valid number').min(0, 'Cannot be negative'),
+  remainingBalance: Yup.number().typeError('Must be a valid number').min(0, 'Cannot be negative'),
+  isGstCustomer: Yup.boolean(),
+  companyName: Yup.string().when('isGstCustomer', ([isGst], schema) =>
+    isGst ? schema.trim().required('Company name is required for GST customer') : schema.notRequired()
+  ),
+  gstin: Yup.string().when('isGstCustomer', ([isGst], schema) =>
+    isGst
+      ? schema
+          .trim()
+          .uppercase()
+          .matches(GSTIN_REGEX, 'Enter a valid 15-character GSTIN')
+          .required('GSTIN is required')
+      : schema.notRequired()
+  ),
+});
+
+function EditCustomer({ onClose }) {
+  const { plan = [] } = useSelector((state) => state.plan);
+  const { customer = [], selectedCustomer } = useSelector((state) => state.customer);
+  const { editCustomerPlan, loading } = UseCreateCustomer();
+
+  const dt = Array.isArray(customer)
+    ? customer.find((item) => item._id === selectedCustomer)
+    : null;
+
+  if (!dt) {
+    return <div className="py-6 text-center text-sm text-[#4A5452]">No customer selected.</div>;
+  }
+
+  const currentPlanId =
+    typeof dt.planId === 'object' && dt.planId !== null ? dt.planId._id : dt.planId || '';
+
+  return (
+    <Formik
+      enableReinitialize
+      initialValues={{
+        name: dt.name || '',
+        mobile: dt.mobile || '',
+        email: dt.email || '',
+        address: dt.address || '',
+        status: dt.status || 'active',
+        planId: currentPlanId,
+        advanceAmount: dt.advanceAmount ?? 0,
+        remainingBalance: dt.remainingBalance ?? 0,
+        isGstCustomer: Boolean(dt.isGstCustomer),
+        companyName: dt.companyName || '',
+        gstin: dt.gstin || '',
+        billingAddress: dt.billingAddress || '',
+        hsnSac: dt.hsnSac || '998422',
+        gstRate: dt.gstRate ?? 18,
+      }}
+      validationSchema={editCustomerSchema}
+      onSubmit={async (values) => {
+        await editCustomerPlan(selectedCustomer, values, () => {
+          onClose?.();
+        });
+      }}
+    >
+      {({ values, errors, touched, handleBlur, handleSubmit, handleChange, setFieldValue }) => (
+        <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="edit-cust-name" className="block text-sm font-medium text-[#2A3331] mb-1">
+                Customer Name
+              </label>
+              <input
+                id="edit-cust-name"
+                type="text"
+                name="name"
+                value={values.name}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#C3D2CF] bg-white text-[#141918]"
+              />
+              {errors.name && touched.name && (
+                <p className="mt-1 text-xs text-rose-600">{errors.name}</p>
+              )}
             </div>
-            <div className="divider divider-[#AA3AA5]"></div>
-            {/* <p className="btn  border-t-indigo-500 hover:bg-indigo-500 btn-outline float-right" onClick={()=>navigate('/home')}>{'<--- back'}</p> */}
-            <div className="   w-3/4 mx-auto  opacity-95 border border-[#d60bc5] animate-border rounded-lg shadow-2xl  sm:p-6 md:p-8 ">
-              <Formik
-              enableReinitialize
-                  initialValues={{
-                    name :dt?.name,
-                    mobile:dt?.mobile,
-                    address:dt?.address,
-                    planId:dt?.planId,
-                    advanceAmount:dt?.advanceAmount,
-                    remainingBalance:dt?.remainingBalance
 
+            <div>
+              <label htmlFor="edit-cust-mobile" className="block text-sm font-medium text-[#2A3331] mb-1">
+                Mobile Number
+              </label>
+              <input
+                id="edit-cust-mobile"
+                type="tel"
+                name="mobile"
+                maxLength={10}
+                value={values.mobile}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#C3D2CF] bg-white text-[#141918]"
+              />
+              {errors.mobile && touched.mobile && (
+                <p className="mt-1 text-xs text-rose-600">{errors.mobile}</p>
+              )}
+            </div>
+          </div>
 
-                  }}
-                  onSubmit={(values)=>handleCreate(values)}
-                  validationSchema={editcustomerSchema}
-
-
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="edit-cust-plan" className="block text-sm font-medium text-[#2A3331] mb-1">
+                Subscribed Plan
+              </label>
+              <select
+                id="edit-cust-plan"
+                name="planId"
+                value={values.planId}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#C3D2CF] bg-white text-[#141918]"
               >
-                {({values,errors,touched,handleBlur,handleSubmit,handleChange})=>(
-                  <form onSubmit={handleSubmit}>
-                    <div className="">
-                <label className="text-orange-100">Name</label>
-                <input value={values.name} disabled className='input input-bordered w-full text-black' type="text" name='name' placeholder="Enter customer name"  onBlur={handleBlur} onChange={handleChange}/>
-                {errors.name && touched.name ? <div style={{color:"red"}}>{errors.name}</div>:null}
-              </div>
-              <div className="">
-                <label className="text-orange-100">Mobile</label>
-                <input value={values.mobile} disabled className='input input-bordered w-full text-black' type="tel" name='mobile' placeholder="9876543210"  onBlur={handleBlur} onChange={handleChange}/>
-                {errors.mobile && touched.mobile ? <div style={{color:"red"}}>{errors.mobile}</div>:null}
-              </div>
-              <div className="">
-                <label className="text-orange-100">Select plan</label>
-                <select value={values.planId}  className='input input-bordered w-full text-black' type="text" name='planId' placeholder="select plan"  onBlur={handleBlur} onChange={handleChange}>
-                <option value="" defaultChecked >select</option>
-                 {plan && plan.map((e,i)=>{
-                    return <option key={i} value={e._id}>{e.name} { e.amount}</option>
-                 })}
-                 
-                  {/* <option value="Basic">Basic</option>
-                  <option value="Standard">Standard</option>
-                  <option value="Recommended">Recommended</option>
-                  <option value="Pro">Pro</option>
-                  <option value="Family">Family</option>
-                  <option value="Mega">Mega</option>
-                  <option value="Giga">Giga</option>
-                  <option value="Tera">Tera</option>
-                  <option value=""></option>
-                  <option value=""></option> */}
+                <option value="">Select a plan</option>
+                {Array.isArray(plan) &&
+                  plan.map((item) => (
+                    <option key={item._id} value={item._id}>
+                      {item.name} — {item.speed} Mbps ({formatCurrency(item.amount)}/mo)
+                    </option>
+                  ))}
+              </select>
+            </div>
 
-                </select>
-                {errors.planId && touched.planId ? <div style={{color:"red"}}>{errors.planId}</div>:null}
-              </div>
-              <div className="pb-2">
-                <label  className="text-orange-100"> Address</label>
-              <textarea value={values.address} disabled className="textarea textarea-warning  w-full text-black" placeholder="Enter address" name='address'   onBlur={handleBlur} onChange={handleChange}></textarea>
-                {errors.address && touched.address ? <div style={{color:"red"}}>{errors.address}</div>:null}
-              </div>
-              <div className="">
-                <label className="text-orange-100">Advance Amount</label>
-                <input value={values.advanceAmount}  className='input input-bordered w-full text-black' type="number" name='advanceAmount' placeholder="enter if only had"  onBlur={handleBlur} onChange={handleChange}/>
-                {errors.advanceAmount && touched.advanceAmount ? <div style={{color:"red"}}>{errors.advanceAmount}</div>:null}
-              </div>
-              <div className="">
-                <label className="text-orange-100">Remaining balance or pending</label>
-                <input value={values.remainingBalance}  className='input input-bordered w-full text-black' type="number" name='remainingBalance' placeholder="enter if only had"  onBlur={handleBlur} onChange={handleChange}/>
-                {errors.remainingBalance && touched.remainingBalance ? <div style={{color:"red"}}>{errors.remainingBalance}</div>:null}
-              </div>
-                  <div className="btn btn-primary  w-full py-2 "  onClick={handleSubmit}>Change Plan</div>
-                  </form>
-                )}
+            <div>
+              <label htmlFor="edit-cust-status" className="block text-sm font-medium text-[#2A3331] mb-1">
+                Connection Status
+              </label>
+              <select
+                id="edit-cust-status"
+                name="status"
+                value={values.status}
+                onChange={handleChange}
+                className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#C3D2CF] bg-white text-[#141918]"
+              >
+                <option value="active">Active (Billed Monthly)</option>
+                <option value="suspended">Suspended (Billing Paused)</option>
+                <option value="disconnected">Disconnected (Billing Stopped)</option>
+              </select>
+            </div>
+          </div>
 
-              </Formik>
-            </div></>}
-  </div>
-  </>
+          <div>
+            <label htmlFor="edit-cust-address" className="block text-sm font-medium text-[#2A3331] mb-1">
+              Installation Address
+            </label>
+            <textarea
+              id="edit-cust-address"
+              name="address"
+              rows={2}
+              value={values.address}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#C3D2CF] bg-white text-[#141918]"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-[#2A3331] mb-1">
+                Advance Balance (₹)
+              </label>
+              <input
+                type="number"
+                min="0"
+                name="advanceAmount"
+                value={values.advanceAmount}
+                onChange={handleChange}
+                className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#C3D2CF] bg-white"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-[#2A3331] mb-1">
+                Pending Due (₹)
+              </label>
+              <input
+                type="number"
+                min="0"
+                name="remainingBalance"
+                value={values.remainingBalance}
+                onChange={handleChange}
+                className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-[#C3D2CF] bg-white"
+              />
+            </div>
+          </div>
+
+          {/* GST Profile */}
+          <div className="p-4 rounded-xl bg-brand-50/60 border border-brand-200 space-y-3">
+            <label className="flex items-center justify-between gap-2 cursor-pointer">
+              <div>
+                <p className="text-sm font-semibold text-brand-900">GST Billing Customer</p>
+                <p className="text-xs text-brand-700">Enable sequential Tax Invoice billing</p>
+              </div>
+              <input
+                type="checkbox"
+                checked={values.isGstCustomer}
+                onChange={(e) => setFieldValue('isGstCustomer', e.target.checked)}
+                className="toggle toggle-primary toggle-sm"
+              />
+            </label>
+
+            {values.isGstCustomer && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-brand-200/70">
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-semibold text-[#2A3331] mb-1">
+                    Company / Legal Name *
+                  </label>
+                  <input
+                    type="text"
+                    name="companyName"
+                    value={values.companyName}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    className="w-full px-3 py-2 text-sm rounded-lg border border-[#C3D2CF] bg-white"
+                  />
+                  {errors.companyName && touched.companyName && (
+                    <p className="mt-1 text-xs text-rose-600">{errors.companyName}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-[#2A3331] mb-1">GSTIN *</label>
+                  <input
+                    type="text"
+                    name="gstin"
+                    maxLength={15}
+                    value={values.gstin}
+                    onChange={(e) => setFieldValue('gstin', e.target.value.toUpperCase())}
+                    onBlur={handleBlur}
+                    className="w-full px-3 py-2 text-sm rounded-lg border border-[#C3D2CF] bg-white font-mono uppercase"
+                  />
+                  {errors.gstin && touched.gstin && (
+                    <p className="mt-1 text-xs text-rose-600">{errors.gstin}</p>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="block text-xs font-semibold text-[#2A3331] mb-1">HSN/SAC</label>
+                    <input
+                      type="text"
+                      name="hsnSac"
+                      value={values.hsnSac}
+                      onChange={handleChange}
+                      className="w-full px-2.5 py-2 text-sm rounded-lg border border-[#C3D2CF] bg-white font-mono"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-[#2A3331] mb-1">GST %</label>
+                    <input
+                      type="number"
+                      name="gstRate"
+                      min="0"
+                      max="28"
+                      value={values.gstRate}
+                      onChange={handleChange}
+                      className="w-full px-2.5 py-2 text-sm rounded-lg border border-[#C3D2CF] bg-white"
+                    />
+                  </div>
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-semibold text-[#2A3331] mb-1">
+                    Billing Address
+                  </label>
+                  <textarea
+                    rows={2}
+                    name="billingAddress"
+                    value={values.billingAddress}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 text-sm rounded-lg border border-[#C3D2CF] bg-white"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#E5ECEB]">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 rounded-xl border border-[#C3D2CF] text-sm font-medium text-[#2A3331] hover:bg-[#F7FAFA] cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 disabled:opacity-60 text-white text-sm font-semibold flex items-center gap-2 cursor-pointer"
+            >
+              {loading && <span className="loading loading-spinner loading-xs" />}
+              <span>{loading ? 'Saving...' : 'Save Changes'}</span>
+            </button>
+          </div>
+        </form>
+      )}
+    </Formik>
+  );
 }
 
-export default editCustomer
+export default EditCustomer;

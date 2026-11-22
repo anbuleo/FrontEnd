@@ -1,81 +1,134 @@
-import { Formik } from 'formik'
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Formik } from 'formik';
 import * as Yup from 'yup';
-import UseCreatePlan from '../../Hooks/UseCreatePlan'
+import UseCreatePlan from '../../Hooks/UseCreatePlan';
+import { getStoredUser } from '../../Common/authUtils';
 
-function createPlan() {
+const planSchema = Yup.object().shape({
+  name: Yup.string().trim().required('Plan name is required'),
+  speed: Yup.number()
+    .typeError('Enter a valid speed')
+    .positive('Speed must be greater than 0')
+    .required('Speed limit is required'),
+  amount: Yup.number()
+    .typeError('Enter a valid amount')
+    .positive('Amount must be greater than 0')
+    .required('Monthly amount is required'),
+});
 
-    let {createPlan,loading} = UseCreatePlan()
-    let isAdmin = JSON.parse(localStorage.getItem('data'))?.role
-    let planSchema = Yup.object().shape({
-         name : Yup.string().required('Plan Name Required'),
-         amount : Yup.number().required('* enter amount'),
-         speed:Yup.number().required('* Enter speed limit')
-    })
-     const handleCreate = async (val) =>{
-            try {
-              // console.log(val)
-             await createPlan(val)
-            } catch (error) {
-              console.log(error)
-              toast.error('Error occur')
-            }
-          }
-    
+function CreatePlan({ onClose }) {
+  const { createPlan, loading } = UseCreatePlan();
+  const isAdmin = getStoredUser()?.role === 'admin';
 
+  if (!isAdmin) {
+    return (
+      <div className="p-4 text-center text-sm text-[#4A5452]">
+        Only administrators can create internet plans.
+      </div>
+    );
+  }
 
-  return <>
-  
-           {isAdmin =='admin'? <><div className=''>
-                     {loading ? <div className="place-content-center mx-auto"><span className="loading loading-bars loading-lg"></span></div>:<> <div className="  text-2xl   rounded-lg shadow sm:p-6 md:p-8  ">
-                        <p className="text-center text-orange-100">Create Plan </p>
-                       
-                      </div>
-                      <div className="divider divider-[#AA3AA5]"></div>
-                      {/* <p className="btn  border-t-indigo-500 hover:bg-indigo-500 btn-outline float-right" onClick={()=>navigate('/home')}>{'<--- back'}</p> */}
-                      <div className="   w-3/4 mx-auto  opacity-95 border border-[#d60bc5]  rounded-lg shadow-2xl  sm:p-6 md:p-8 ">
-                        <Formik
-                            initialValues={{
-                              name : "",
-                             amount:0,
-                             speed:0
-          
-                            }}
-                            onSubmit={(values)=>handleCreate(values)}
-                            validationSchema={planSchema}
-          
-          
-                        >
-                          {({errors,touched,handleBlur,handleSubmit,handleChange})=>(
-                            <form onSubmit={handleSubmit}>
-                              <div className="">
-                          <label className="text-orange-100">Name</label>
-                          <input className='input input-bordered w-full text-black' type="text" name='name' placeholder="plan name"  onBlur={handleBlur} onChange={handleChange}/>
-                          {errors.name && touched.name ? <div style={{color:"red"}}>{errors.name}</div>:null}
-                        </div>
-                        <div className="">
-                          <label className="text-orange-100">Speed</label>
-                          <input className='input input-bordered w-full text-black' type="number" name='speed' placeholder="enter plan speed"  onBlur={handleBlur} onChange={handleChange}/>
-                          {errors.speed && touched.speed ? <div style={{color:"red"}}>{errors.speed}</div>:null}
-                        </div>
-                       
-                        <div className="">
-                          <label className="text-orange-100">Amount</label>
-                          <input className='input input-bordered w-full text-black' type="number" name='amount' placeholder="enter plan amount"  onBlur={handleBlur} onChange={handleChange}/>
-                          {errors.amount && touched.amount ? <div style={{color:"red"}}>{errors.amount}</div>:null}
-                        </div>
-                       
-                        
-                            <div className="btn btn-primary  w-full py-2 " onClick={handleSubmit}>Create</div>
-                            </form>
-                          )}
-          
-                        </Formik>
-                      </div></>}
-            </div></>:<><p>Admin only</p></>}
-              
-  </>
+  return (
+    <Formik
+      initialValues={{ name: '', speed: '', amount: '' }}
+      validationSchema={planSchema}
+      onSubmit={async (values, { resetForm }) => {
+        const ok = await createPlan(values, () => {
+          resetForm();
+          onClose?.();
+        });
+        if (!ok) return;
+      }}
+    >
+      {({ values, errors, touched, handleBlur, handleSubmit, handleChange }) => (
+        <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+          <div>
+            <label htmlFor="plan-name" className="block text-sm font-medium text-[#2A3331] mb-1">
+              Plan Name
+            </label>
+            <input
+              id="plan-name"
+              type="text"
+              name="name"
+              placeholder="e.g., Fiber Pro 100"
+              value={values.name}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={`w-full px-3.5 py-2.5 text-sm rounded-xl border bg-white text-[#141918] focus:outline-none focus:ring-2 focus:ring-brand-500/20 ${
+                errors.name && touched.name ? 'border-rose-400' : 'border-[#C3D2CF] focus:border-brand-500'
+              }`}
+            />
+            {errors.name && touched.name && (
+              <p className="mt-1 text-xs text-rose-600">{errors.name}</p>
+            )}
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="plan-speed" className="block text-sm font-medium text-[#2A3331] mb-1">
+                Speed (Mbps)
+              </label>
+              <input
+                id="plan-speed"
+                type="number"
+                min="1"
+                name="speed"
+                placeholder="e.g., 100"
+                value={values.speed}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={`w-full px-3.5 py-2.5 text-sm rounded-xl border bg-white text-[#141918] focus:outline-none focus:ring-2 focus:ring-brand-500/20 ${
+                  errors.speed && touched.speed ? 'border-rose-400' : 'border-[#C3D2CF] focus:border-brand-500'
+                }`}
+              />
+              {errors.speed && touched.speed && (
+                <p className="mt-1 text-xs text-rose-600">{errors.speed}</p>
+              )}
+            </div>
+
+            <div>
+              <label htmlFor="plan-amount" className="block text-sm font-medium text-[#2A3331] mb-1">
+                Monthly Price (₹)
+              </label>
+              <input
+                id="plan-amount"
+                type="number"
+                min="1"
+                name="amount"
+                placeholder="e.g., 599"
+                value={values.amount}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={`w-full px-3.5 py-2.5 text-sm rounded-xl border bg-white text-[#141918] focus:outline-none focus:ring-2 focus:ring-brand-500/20 ${
+                  errors.amount && touched.amount ? 'border-rose-400' : 'border-[#C3D2CF] focus:border-brand-500'
+                }`}
+              />
+              {errors.amount && touched.amount && (
+                <p className="mt-1 text-xs text-rose-600">{errors.amount}</p>
+              )}
+            </div>
+          </div>
+
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#E5ECEB]">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 rounded-xl border border-[#C3D2CF] text-sm font-medium text-[#2A3331] hover:bg-[#F7FAFA] transition cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 disabled:opacity-60 text-white text-sm font-semibold flex items-center gap-2 transition cursor-pointer"
+            >
+              {loading && <span className="loading loading-spinner loading-xs" />}
+              <span>{loading ? 'Creating...' : 'Create Plan'}</span>
+            </button>
+          </div>
+        </form>
+      )}
+    </Formik>
+  );
 }
 
-export default createPlan
+export default CreatePlan;

@@ -1,12 +1,7 @@
-import React from 'react'
-import Layout from '../Components/Layout'
+import Report from './Report';
 
 function Admin() {
-  return<>
-  <Layout>
-    
-  </Layout>
-  </>
+  return <Report />;
 }
 
-export default Admin
+export default Admin;

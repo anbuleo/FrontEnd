@@ -1,37 +1,34 @@
-import {createSlice} from "@reduxjs/toolkit"
-
-
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-    plan:[],
-    selectedPlanId: null,
-}
+  plan: [],
+  selectedPlanId: null,
+};
 
 export const planSlice = createSlice({
-    name:'plan',
-    initialState,
-    reducers : {
-        addAllPlans : (state,action)=>{
-            state.plan  = action.payload
-        },
-        editPlan : (state,action)=>{
-            const plans = state.plan;
-            const planIndex = plans.findIndex(t=>t._id === action.payload._id);
-            let newPlan = action.payload;
-            plans[planIndex] = newPlan;
-        },
-        deletePlan : (state,action)=>{
-            let planIndex = state.plan.findIndex(t=>t._id === action.payload)
-            if(planIndex){
-                state.plan.splice(planIndex,1)
-            }
-        },
-        setSelectedPlan: (state, action) => {
-            state.selectedPlanId = action.payload; // ✅ Store selected plan ID
-        },
-        
-    }
-})
+  name: 'plan',
+  initialState,
+  reducers: {
+    addAllPlans: (state, action) => {
+      state.plan = Array.isArray(action.payload) ? action.payload : [];
+    },
+    editPlan: (state, action) => {
+      const planIndex = state.plan.findIndex((t) => t._id === action.payload?._id);
+      if (planIndex !== -1) {
+        state.plan[planIndex] = action.payload;
+      }
+    },
+    deletePlan: (state, action) => {
+      const planIndex = state.plan.findIndex((t) => t._id === action.payload);
+      if (planIndex !== -1) {
+        state.plan.splice(planIndex, 1);
+      }
+    },
+    setSelectedPlan: (state, action) => {
+      state.selectedPlanId = action.payload;
+    },
+  },
+});
 
-export const {addAllPlans,editPlan,deletePlan,setSelectedPlan} = planSlice.actions
-export default planSlice.reducer
+export const { addAllPlans, editPlan, deletePlan, setSelectedPlan } = planSlice.actions;
+export default planSlice.reducer;
